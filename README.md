@@ -4,12 +4,19 @@
 
 * a Github account: If not the case, go https://github.com/ and sign up
 * enroll the classroom as a student: go ==missing url==
-  * ![step 1](/.assets/img/enroll1.png)
+![step 1n, enrolling](/.assets/img/enroll1.png)
 
 ## Setup
 
 ### Preferred: Run remotely with Github Codespaces
-![step 2](/.assets/img/enroll2.png)
+Start your Codespace (an online vscode running in github infrastructures)
+![step 2, starting your codespace](/.assets/img/enroll2.png)
+
+Your Codespace is configuring... Please wait
+![step 3, building your codespace](/.assets/img/building_codespace.png)
+
+Your Codespace is ready, you can open the python file example and run it
+![step 4, ready](/.assets/img/ready.png)
 
 ### Unsupported (allmost): Run locally
 
@@ -86,8 +93,12 @@ download and install https://download.jetbrains.com/python/pycharm-community-202
 
 #### Setting up Pycharm 
 
+TO COME
 
+</details>
 
 </details>
 
-</details>
+## Performance Improvement for students and Academics: install gurobi
+
+TO COME.
