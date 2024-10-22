@@ -4,19 +4,19 @@
 
 * a Github account: If not the case, go https://github.com/ and sign up
 * enroll the classroom as a student: go ==missing url==
-  * [!step 1](/.assets/img/enroll1.png)
-  * [!step 2](/.assets/img/enroll2.png)
+  * ![step 1](/.assets/img/enroll1.png)
 
 ## Setup
 
 ### Preferred: Run remotely with Github Codespaces
+![step 2](/.assets/img/enroll2.png)
 
 ### Unsupported (allmost): Run locally
 
 <details>
   <summary>Help me, I really really want to run it locally</summary>
 
-[!blue pill or red pill](https://en.wikipedia.org/wiki/Red_pill_and_blue_pill#/media/File:Red_and_blue_pill.jpg)
+![blue pill or red pill](https://en.wikipedia.org/wiki/Red_pill_and_blue_pill#/media/File:Red_and_blue_pill.jpg)
 
 Are you sure you want to choose the red pill over the blue pill?
 
