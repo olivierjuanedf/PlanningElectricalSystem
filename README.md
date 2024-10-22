@@ -4,8 +4,8 @@
 
 * a Github account: If not the case, go https://github.com/ and sign up
 * enroll the classroom as a student: go ==missing url==
-  * [!step 1](.assets/img/enroll1.png)
-  * [!step 2](.assets/img/enroll2.png)
+  * [!step 1](/.assets/img/enroll1.png)
+  * [!step 2](/.assets/img/enroll2.png)
 
 ## Setup
 
