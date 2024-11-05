@@ -1,10 +1,11 @@
-# athens-2025
+# Class Title
 
-## Prerequis en anglais 
+## Requirements 
 
 * a Github account: If not the case, go https://github.com/ and sign up
 * enroll the classroom as a student: go ==missing url==
 ![step 1n, enrolling](/.assets/img/enroll1.png)
+* Click to accept the assignment
 
 ## Setup
 
@@ -18,7 +19,7 @@ Your Codespace is configuring... Please wait
 Your Codespace is ready, you can open the python file example and run it
 ![step 4, ready](/.assets/img/ready.png)
 
-### Unsupported (allmost): Run locally
+### Unsupported (almost): Run locally
 
 <details>
   <summary>Help me, I really really want to run it locally</summary>
