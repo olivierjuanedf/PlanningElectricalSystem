@@ -104,12 +104,13 @@ def apply_data_type_check(data_type: str, data_val) -> bool:
 
 # correspondence between types and associated functions (and additional keyword args when applicable) 
 # to be applied for type check
-CHECK_FUNCTIONS = {"dict_str_dict": check_str_dict_dict, 
-                   "dict_str_str": check_str_str_dict,
-                   "dict_str_list_of_float": check_str_list_of_float_dict,
+CHECK_FUNCTIONS = {"str": check_str,
                    "list_of_int": check_list_of_int,
                    "list_of_str": check_list_of_str,
                    "none_or_list_of_str": check_none_or_list_of_str,
-                   "str": check_str, 
+                   "dict_str_dict": check_str_dict_dict, 
+                   "dict_str_list_of_float": check_str_list_of_float_dict,
+                   "dict_str_list_of_str": check_str_list_of_str_dict,
+                   "dict_str_str": check_str_str_dict,
                    "two_level_dict_str_str_list-of-str": check_str_str_list_of_str_dict,
                    "two_level_dict_str_str_str": check_three_level_str_dict}

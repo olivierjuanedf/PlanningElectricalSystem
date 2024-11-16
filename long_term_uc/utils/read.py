@@ -106,5 +106,6 @@ def read_and_check_pypsa_static_params() -> PypsaStaticParams:
     json_pypsa_static_params = check_and_load_json_file(json_file=json_pypsa_static_params_file,
                                                         file_descr="JSON PyPSA static params")
     pypsa_static_params = PypsaStaticParams(**json_pypsa_static_params)
+    pypsa_static_params.check_types()
     pypsa_static_params.process()
     return pypsa_static_params

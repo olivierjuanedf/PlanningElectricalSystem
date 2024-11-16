@@ -32,6 +32,31 @@ def apply_params_type_check(param_obj_dict: dict, types_for_check: Dict[str, str
                             errors_list=check_errors)
 
 
+# raw types (just after reading) of the following attributes 
+# -> for "direct" check to stop asap if erroneous values
+# TODO: define complex types in a dataclass (centralized)
+RAW_TYPES_FOR_CHECK = {"eraa_dataset_descr": 
+                       {"aggreg_prod_types_def": "two_level_dict_str_str_list-of-str",
+                        "agg_prod_types_with_cf_data": "list_of_str",
+                        "available_climatic_years": "list_of_int",
+                        "available_countries": "list_of_str",
+                        "available_aggreg_prod_types": "list_of_str",
+                        "available_intercos": "list_of_str",
+                        "available_target_years": "list_of_int",
+                        "eraa_edition": "str",
+                        "gps_coordinates": "dict_str_list_of_float",
+                        "per_agg_prod_type_color": "dict_str_str",
+                        "per_zone_color": "dict_str_str",
+                        "pypsa_unit_params_per_agg_pt": "dict_str_dict",
+                        "units_complem_params_per_agg_pt": "two_level_dict_str_str_str"
+                        },
+                        "pypsa_static_params":
+                        {
+                            "min_unit_params_per_agg_pt": "dict_str_list_of_str"
+                        }
+}
+
+
 @dataclass
 class UsageParameters:
     adding_interco_capas: bool = False
@@ -41,25 +66,6 @@ class UsageParameters:
     mode: Mode = "solo"
     team: Optional[str] = None
 
-
-# raw types (just after reading) of the following attributes 
-# -> for "direct" check to stop asap if erroneous values
-# TODO: define complex types in a dataclass (centralized)
-RAW_TYPES_FOR_CHECK = {
-    "aggreg_prod_types_def": "two_level_dict_str_str_list-of-str",
-    "agg_prod_types_with_cf_data": "list_of_str",
-    "available_climatic_years": "list_of_int",
-    "available_countries": "list_of_str",
-    "available_aggreg_prod_types": "list_of_str",
-    "available_intercos": "list_of_str",
-    "available_target_years": "list_of_int",
-    "eraa_edition": "str",
-    "gps_coordinates": "dict_str_list_of_float",
-    "per_agg_prod_type_color": "dict_str_str",
-    "per_zone_color": "dict_str_str",
-    "pypsa_unit_params_per_agg_pt": "dict_str_dict",
-    "units_complem_params_per_agg_pt": "two_level_dict_str_str_str"
-}
 
 @dataclass
 class ERAADatasetDescr:
@@ -85,8 +91,8 @@ class ERAADatasetDescr:
         Check coherence of types
         """
         apply_params_type_check(param_obj_dict=self.__dict__, 
-                                types_for_check=RAW_TYPES_FOR_CHECK, 
-                                param_name="ERAA description data - fixed ones - ")
+                                types_for_check=RAW_TYPES_FOR_CHECK["eraa_dataset_descr"], 
+                                param_name="ERAA description data - fixed ones -")
 
     def process(self):
         for agg_pt, pypsa_params in self.pypsa_unit_params_per_agg_pt.items():
@@ -106,6 +112,14 @@ ALL_UNITS_KEY = "all_units"
 class PypsaStaticParams:
     # per aggreg. prod. unit list of minimal parameters for PyPSA generators to be built
     min_unit_params_per_agg_pt: Dict[str, List[str]]
+
+    def check_types(self):
+        """
+        Check coherence of types
+        """
+        apply_params_type_check(param_obj_dict=self.__dict__, 
+                                types_for_check=RAW_TYPES_FOR_CHECK["pypsa_static_params"], 
+                                param_name="PyPSA static params - to set objects main infos")
 
     def process(self):
         # add common static params to all agg. prod type
