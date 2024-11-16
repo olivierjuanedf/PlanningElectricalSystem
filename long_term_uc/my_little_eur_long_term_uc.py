@@ -1,6 +1,8 @@
 """
 Read JSON parametrization files... and check coherence of them
 """
+import os, sys
+sys.path += [os.path.dirname(os.path.dirname(__file__))]
 import matplotlib.pyplot as plt
 
 from long_term_uc.common.long_term_uc_io import get_prod_figure, get_network_figure

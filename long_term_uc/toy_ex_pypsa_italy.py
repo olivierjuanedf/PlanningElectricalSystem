@@ -6,6 +6,9 @@ First very simple toy Unit Commitment model of Italy zone - alone... with PyPSA 
 """
 Fix a few "global" parameters to simply modify a few elements when making "sensitivity tests"
 """
+import os, sys
+sys.path += [os.path.dirname(os.path.dirname(__file__))]
+
 from datetime import datetime, timedelta
 from long_term_uc.common.uc_run_params import UCRunParams
 
