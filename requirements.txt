@@ -5,3 +5,5 @@ pandas
 matplotlib
 matplotlib-inline
 pypsa
+cartopy
+Requests
