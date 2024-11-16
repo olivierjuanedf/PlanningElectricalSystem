@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List, Optional, Tuple, Union
+import numpy as np
 
 from long_term_uc.common.constants_temporal import DAY_OF_WEEK
 from long_term_uc.common.long_term_uc_io import DATE_FORMAT_PRINT
@@ -88,3 +89,7 @@ def lexico_compar_str(string1: str, string2: str, return_tuple: bool = False) ->
         return (string1, string2) if return_tuple is True else string1
     else:
         return (string2, string1) if return_tuple is True else string2
+
+
+def flatten_list_of_lists(list_of_lists: List[list]) -> list:
+    return np.concatenate(list_of_lists).tolist()
