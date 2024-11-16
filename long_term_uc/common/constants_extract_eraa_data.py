@@ -19,7 +19,19 @@ USAGE_PARAMS_SHORT_NAMES = {
 
 
 type Mode = Literal['solo', 'europe']
-    
+
+
+def apply_params_type_check(param_obj_dict: dict, types_for_check: Dict[str, str], param_name: str):
+    check_errors = []
+    for attr_tb_checked, type_for_check in types_for_check.items():
+        check_result = apply_data_type_check(data_type=type_for_check, data_val=param_obj_dict[attr_tb_checked])
+        if check_result is False:
+            check_errors.append(attr_tb_checked)
+    if len(check_errors) > 0:
+        print_errors_list(error_name=f"{param_name} JSON data with erroneous types:", 
+                            errors_list=check_errors)
+
+
 @dataclass
 class UsageParameters:
     adding_interco_capas: bool = False
@@ -72,17 +84,9 @@ class ERAADatasetDescr:
         """
         Check coherence of types
         """
-        check_errors = []
-        obj_dict = self.__dict__
-        for attr_tb_checked, type_for_check in RAW_TYPES_FOR_CHECK.items():
-            check_result = apply_data_type_check(data_type=type_for_check, 
-                                                 data_val=obj_dict[attr_tb_checked])
-            if check_result is False:
-                check_errors.append(attr_tb_checked)
-        if len(check_errors) > 0:
-            print_errors_list(error_name="JSON data with erroneous types:", 
-                              errors_list=check_errors)
-
+        apply_params_type_check(param_obj_dict=self.__dict__, 
+                                types_for_check=RAW_TYPES_FOR_CHECK, 
+                                param_name="ERAA description data - fixed ones - ")
 
     def process(self):
         for agg_pt, pypsa_params in self.pypsa_unit_params_per_agg_pt.items():
