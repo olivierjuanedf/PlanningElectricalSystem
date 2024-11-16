@@ -66,6 +66,12 @@ class UsageParameters:
     mode: Mode = "solo"
     team: Optional[str] = None
 
+    def check_types(self):
+        """
+        Check coherence of types
+        """
+        # TODO: code it
+
 
 @dataclass
 class ERAADatasetDescr:
