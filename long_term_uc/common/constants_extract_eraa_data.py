@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Union, Optional, Literal
 
+from common.error_msgs import print_errors_list
 from long_term_uc.utils.basic_utils import is_str_bool
 from long_term_uc.utils.eraa_utils import set_interco_to_tuples
+from utils.type_checker import apply_data_type_check
 
 
 INTERCO_STR_SEP = "2"
@@ -66,13 +68,21 @@ class ERAADatasetDescr:
     # for each aggreg. prod type, a dict. {complem. param name: source - "from_json_tb_modif"/"from_eraa_data"}
     units_complem_params_per_agg_pt: Dict[str, Dict[str, str]]
 
-    def check(self):
+    def check_types(self):
         """
-        Check coherence of values/types
+        Check coherence of types
         """
-        check_results = []
-        #for attr_tb_checked, type_for_check in TYPES_FOR_CHECK.items():
-        #    pass
+        check_errors = []
+        obj_dict = self.__dict__
+        for attr_tb_checked, type_for_check in RAW_TYPES_FOR_CHECK.items():
+            check_result = apply_data_type_check(data_type=type_for_check, 
+                                                 data_val=obj_dict[attr_tb_checked])
+            if check_result is False:
+                check_errors.append(attr_tb_checked)
+        if len(check_errors) > 0:
+            print_errors_list(error_name="JSON data with erroneous types:", 
+                              errors_list=check_errors)
+
 
     def process(self):
         for agg_pt, pypsa_params in self.pypsa_unit_params_per_agg_pt.items():

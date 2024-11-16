@@ -55,6 +55,7 @@ def read_and_check_uc_run_params():
     usage_params = UsageParameters(**json_usage_params_data)
 
     eraa_data_descr = ERAADatasetDescr(**json_params_fixed)
+    eraa_data_descr.check_types()
     eraa_data_descr.process()
 
     countries_data = {

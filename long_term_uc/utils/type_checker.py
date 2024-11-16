@@ -2,7 +2,6 @@ import sys
 from typing import Optional
 
 from long_term_uc.common.error_msgs import print_out_msg
-from utils.basic_utils import flatten_list_of_lists
 
 
 # TODO: Dict[str, Dict[str, List[str]]], Dict[str, List[int]], Dict[str, Dict[str, Union[str or num]]]
@@ -100,7 +99,7 @@ def apply_data_type_check(data_type: str, data_val) -> bool:
         print_out_msg(msg_level="error", 
                       msg=f"Function to check data type {data_type} is None (not defined) -> STOP")
         sys.exit(1)
-    return map()
+    return list(map(CHECK_FUNCTIONS[data_type], [data_val]))[0]
 
 
 # correspondence between types and associated functions (and additional keyword args when applicable) 
