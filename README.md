@@ -33,6 +33,7 @@ Are you sure you want to choose the red pill over the blue pill?
   <summary>Yes, I'm sure</summary>
 
 You have to install Python and Pycharm 
+
 #### Python
 Install a compatible Python version from 3.9 to 3.12, avoid 3.13 and versions older than 3.9 
 

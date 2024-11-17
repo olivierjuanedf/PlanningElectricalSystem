@@ -47,8 +47,13 @@ def get_val_of_agg_pt_in_df(df_data: pd.DataFrame, prod_type_agg_col: str,
         return np.array(df_data[df_data[prod_type_agg_col] == agg_prod_type][value_col])
 
 
+def set_country_trigram(country: str) -> str:
+    return f"{country[:3].lower()}"
+
+
 def set_gen_unit_name(country: str, agg_prod_type: str) -> str:
-    return f"{country[:3].lower()}_{agg_prod_type}"
+    country_trigram = set_country_trigram(country=country)
+    return f"{country_trigram}_{agg_prod_type}"
 
 
 def get_generation_units_data(pypsa_unit_params_per_agg_pt: Dict[str, dict], 

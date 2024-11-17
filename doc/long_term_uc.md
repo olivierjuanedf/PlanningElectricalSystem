@@ -1,9 +1,18 @@
 # Tutorial - Long-Term Unit Commitment part
 
-## Saturday morning session: start simple, with "blank running"
+## Monday afternoon session: start simple, with a "toy model" (of a unique country)
 
 * PyPSA documentation: https://pypsa.readthedocs.io/en/latest/
 * ERAA documentation (2023.2 will be used): https://www.entsoe.eu/outlooks/eraa/
+
+Main parameters in PyPSA generator objects:
+* **"p_nom"** -> capacity (a power, in MW). **Format**: int
+* "p_min_pu" -> minimal power level - as % of capacity, set to 0 to start simple. **Format**: float or vector (list or NumPy array)
+* p_max_pu -> idem, maximal power. Can integrate "Capacity Factors" (or maintenance); in this case it can be variable in time. **Format**: idem "p_max_pu"
+
+
+
+TBC
 
 1) **Look at both JSON input parameters files** described in Appendix (the ones in folder *input\long_term_uc*).
 2) **Change values in *elec-europe_params_to-be-modif.json* parameter file** -> you can prepare different European electricity system configurations. Save them under different names; then copy-paste content into *elec-europe_params_to-be-modif.json* to...
@@ -30,4 +39,3 @@ The ones in folder *input\long_term_uc*; **file by file description**:
     - "selected_prod_types": **per country selection of the (generation unit) aggregate production types** to be part of your model. N.B. Using aggregate production types, i.e. the ones of field "available_aggreg_prod_types" in file *elec-europe_params_fixed.json*
     - "uc_period_start": **date from which UC optimization period starts; under format "1900/%M/%d"**. Ex.: "1900/1/1" to start from beginning of the year. N.B. "1900" to clearly indicate that a "fictive calendar" (modelling one) be used in ERAA data, with 364 days (to get 52 full weeks... an important granularity for some unit optim., as discussed in class)
     - (optional) "uc_period_end": idem, **end of period; same format**. Default value: period of 9 days starting from "uc_period_start". 
-

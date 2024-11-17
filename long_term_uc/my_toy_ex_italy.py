@@ -1,28 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-First very simple toy Unit Commitment model of Italy zone - alone... with PyPSA and ERAA data
+First very simple toy Unit Commitment model of Italy zone - alone -> with PyPSA and ERAA data
 """
 
-"""
-Fix a few "global" parameters to simply modify a few elements when making "sensitivity tests"
-"""
+
 import os, sys
 sys.path += [os.path.dirname(os.path.dirname(__file__))]
 
-from datetime import datetime, timedelta
-from long_term_uc.common.uc_run_params import UCRunParams
 
-modeled_countries = ["italy"]  # unique country modeled in this example
-year = 2025  # select first ERAA year available, as an example 
-climatic_year = 1989  # and a given "climatic year" (to possibly test different climatic*weather conditions)
-res_for_reading_test = ["wind_onshore", "wind_offshore", "solar_pv"]
-uc_period_start = datetime(year=1900, month=1, day=1)
-uc_period_end = uc_period_start + timedelta(days=14)
-uc_run_params = UCRunParams(selected_countries=modeled_countries, selected_target_year=year, 
-                            selected_climatic_year=climatic_year, 
-                            selected_prod_types={"italy": res_for_reading_test},
-                            uc_period_start=uc_period_start,
-                            uc_period_end=uc_period_end)
+
 AGG_PROD_TYPES_DEF = {
     "res_capa-factors": {
         "solar_pv": ["lfsolarpv"],
@@ -50,16 +36,52 @@ AGG_PROD_TYPES_DEF = {
 }
 
 """
-Get needed data
+# I) Set global parameters for the case simulated
+"""
+# unique country modeled in this example -> some comments are provided 
+# below to explain how PyPSA model could be extended to a multiple countries case
+# -> look at "[Multiple-countries ext.]" tags
+country = "italy"
+# select first ERAA year available, as an example 
+# -> see values in input/long_term_uc/elec-europe_eraa-available-values.json
+year = 2025
+# and a given "climatic year" (to possibly test different climatic*weather conditions)
+# -> idem
+# N.B. Ask Boutheina OUESLATI on Wednesday to get an idea of the 'climatic' versus 'weather' conditions 
+climatic_year = 1989
+agg_prod_types_selec = ["wind_onshore", "wind_offshore", "solar_pv"]
+
+"""
+II) Initialize a UCRunParams object 
+"""
+# N.B. UC = Unit Commitment, i.e. supply-demand equilibrium problem 
+# - for given electricity generation capacities
+from datetime import datetime, timedelta
+from long_term_uc.common.uc_run_params import UCRunParams
+# Set start and end date corresponding to the period to be simulated
+# ATTENTION: uc_period_end not included -> here period {1900/1/1 00:00, 1900/1/1 01:00, ..., 1900/1/13 23:00}
+# N.B. Calendar of year 1900 used here, to make explicit the fact that ERAA data are 'projected' 
+# on a fictive calendar; as made of 52 full weeks
+uc_period_start = datetime(year=1900, month=1, day=1)
+uc_period_end = uc_period_start + timedelta(days=14)
+selected_countries = [country]  # [Multiple-countries ext.] List with multiple country names
+uc_run_params = UCRunParams(selected_countries=selected_countries, selected_target_year=year, 
+                            selected_climatic_year=climatic_year, 
+                            selected_prod_types={"italy": agg_prod_types_selec},
+                            uc_period_start=uc_period_start,
+                            uc_period_end=uc_period_end)
+
+"""
+III) Get needed data - from ERAA csv files in data\ERAA_2023-2
 """
 from long_term_uc.utils.eraa_data_reader import get_countries_data
 
-# get data for Italy... just for test 
+# III.1) Get data for Italy... just for test -> data used when writing PyPSA model will be re-obtained afterwards
 demand, agg_cf_data, agg_gen_capa_data, interco_capas = \
-    get_countries_data(uc_run_params=uc_run_params, agg_prod_types_with_cf_data=res_for_reading_test,
+    get_countries_data(uc_run_params=uc_run_params, agg_prod_types_with_cf_data=agg_prod_types_selec,
                        aggreg_prod_types_def=AGG_PROD_TYPES_DEF)
 
-# in this case decompose aggreg. CF data into three sub-dicts (for following ex. to be more explicit)
+# III.2) In this case, decompose aggreg. CF data into three sub-dicts (for following ex. to be more explicit)
 from long_term_uc.utils.df_utils import selec_in_df_based_on_list
 solar_pv = {
     "italy": selec_in_df_based_on_list(df=agg_cf_data["italy"], selec_col="production_type_agg",
@@ -74,67 +96,91 @@ wind_off_shore = {
                                        selec_vals=["wind_offshore"], rm_selec_col=True)
 }
 
-"""Initialize PyPSA Network (basis of all!). And print it to check that for now it is... empty"""
+"""
+IV) Build PyPSA model - with unique country (Italy here)
+"""
+# IV.1) Initialize PyPSA Network (basis of all your simulations this week!). 
 import pypsa
 print("Initialize PyPSA network")
-network = pypsa.Network(snapshots=demand[modeled_countries[0]].index)
-network
+# Here snapshots is used to defined the temporal period associated to considered UC model
+# -> for ex. as a list of indices (other formats; like data ranges can be used instead) 
+network = pypsa.Network(snapshots=demand[country].index)
+# And print it to check that for now it is... empty
+print(network)
 
-"""Add bus for considered country"""
+#################################################
+# KEY POINT: main parameters needed for Italy description in PyPSA are set in script
+# long_term_uc.toy_model_params.italy_parameters.py
+# To get the meaning and format of main PyPSA objects/attributes look at file XXX
+#################################################
 
-# N.B. Italy coordinates set randomly!
+# IV.2) Add bus for considered country
+# N.B. Italy coordinates set randomly! (not useful in the calculation that will be done this week)
 from long_term_uc.toy_model_params.italy_parameters import gps_coords
 coordinates = {"italy": gps_coords}
-for country in modeled_countries:
-    network.add("Bus", name=f"{country.capitalize()}", x=coordinates[country][0], y=coordinates[country][1])
+# IV.2.1) For brevity, set country trigram as the "id" of this zone in following model definition (and observed outputs)
+from include.dataset_builder import set_country_trigram
+country_trigram = set_country_trigram(country=country)
+# N.B. Multiple bus would be added if multiple countries were considered
+network.add("Bus", name=country_trigram, x=coordinates[country][0], y=coordinates[country][1])
+# [Multiple-count. ext., start] Loop over the different countries to add an associated bus
+# for country in modeled_countries:
+#    network.add("Bus", name=country_trigram, x=coordinates[country][0], y=coordinates[country][1])
+# [Multiple-count. ext., end]
 
-"""Generators definition, beginning with only simple parameters. Almost "real Italy"... excepting hydraulic storage and Demand-Side Response capacity"""
-
-# N.B. In this toy example values directly set in italy_parameters.py
-# p_nom -> capacity (MW)
-# p_min_pu -> minimal power level - as % of capacity, set to 0 to start simple
-# p_max_pu -> idem, maximal power. Can integrate Capacity Factors (or maintenance)
-country_trigram = country.upper()[:3]
+# IV.4) [VERY KEY STAGE] Generators definition, beginning with only simple parameters. 
+# Almost "real Italy"... excepting hydraulic storage and Demand-Side Response capacity 
+# (we will come back on this later)
+# Thanks to Tim WALTER - student of last year ATHENS course, detailed parameter values associated 
+# to different fuel sources are available in following dictionary. You can use it or search/define 
+# fictive alternative values instead -> XXX (keep format and request to fullfill it?)
 from long_term_uc.common.fuel_sources import FUEL_SOURCES
 from long_term_uc.toy_model_params.italy_parameters import get_generators
+# IV.4.1) get generators to be set on the unique considered bus here 
+# -> from long_term_uc.toy_model_params.italy_parameters.py script
 generators = get_generators(country_trigram=country_trigram, fuel_sources=FUEL_SOURCES, 
                             wind_on_shore_data=wind_on_shore[country], wind_off_shore_data=wind_off_shore[country],
                             solar_pv_data=solar_pv[country])
 
-"""Loop over previous dictionary to add each of the generators to the PyPSA network"""
+# IV.4.2) Loop over previous list of dictionaries to add each of the generators to PyPSA network
+# [Coding trick] ** used to XXX (nom de cette opération ?)
 for generator in generators:
-    network.add("Generator", bus=f"{country.capitalize()}", **generator, )
+    network.add("Generator", bus=country_trigram, **generator, )
+# [Multiple-count. ext., start] Idem but adding the different generators to the bus (country) they are connected to
+# -> a correspondence (for ex. with a dictionary) between bus names and list of associated 
+# generators is then needed
+# [Multiple-count. ext., end]
 
-"""Add load"""
-
+# IV.5) Add load
+# XXX "carrier" TB explained
+# IV.5.1) Setting attribute values in a dictionary
 loads = [
     {
-        "name": f"{country.capitalize()}-load", "bus": f"{country.capitalize()}",
-        "carrier": "AC",
-        "p_set": demand[country]["value"].values
+        "name": f"{country_trigram}-load", "bus": country_trigram,
+        "carrier": "AC", "p_set": demand[country]["value"].values
     }
 ]
+# [Coding trick] f"{my_var} is associated to {my_country}" XXX (f-string link)
+# [Multiple-count. ext., start] Multiple dictionaries in previous list, 
+# each of them corresponding to a given bus (country)
+# [Multiple-count. ext., end]
 
-"""Add loads, here unique for now"""
+# IV.5.2) Then adding Load objects to PyPSA model
 
 for load in loads:
     network.add("Load", **load)
 
-"""Print the network after having completed it"""
-
-network
-
-"""Plot network. Maybe better when having multiple buses (countries)"""
-
+# IV.6) A few prints to check/observe that created PyPSA model be coherent 
+# IV.6.1) Print the network after having completed it
+print(network)
+# IV.6.2) And plot it. Surely better when having multiple buses (countries)!!
 network.plot(
     title="Mixed AC (blue) - DC (red) network - DC (cyan)",
     color_geomap=True,
     jitter=0.3,
 )
-
-"""Print out list of generators"""
-
-network.generators
+# IV.6.3) Print out list of generators
+print(network.generators)
 
 """"OPtimize network" i.e., solve the associated Unit-Commitment pb"""
 
