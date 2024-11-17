@@ -83,7 +83,7 @@ network
 """Add bus for considered country"""
 
 # N.B. Italy coordinates set randomly!
-from long_term_uc.italy_parameters import gps_coords
+from long_term_uc.toy_model_params.italy_parameters import gps_coords
 coordinates = {"italy": gps_coords}
 for country in modeled_countries:
     network.add("Bus", name=f"{country.capitalize()}", x=coordinates[country][0], y=coordinates[country][1])
@@ -95,8 +95,8 @@ for country in modeled_countries:
 # p_min_pu -> minimal power level - as % of capacity, set to 0 to start simple
 # p_max_pu -> idem, maximal power. Can integrate Capacity Factors (or maintenance)
 country_trigram = country.upper()[:3]
-from long_term_uc.fuel_sources import FUEL_SOURCES
-from long_term_uc.italy_parameters import get_generators
+from long_term_uc.common.fuel_sources import FUEL_SOURCES
+from long_term_uc.toy_model_params.italy_parameters import get_generators
 generators = get_generators(country_trigram=country_trigram, fuel_sources=FUEL_SOURCES, 
                             wind_on_shore_data=wind_on_shore[country], wind_off_shore_data=wind_off_shore[country],
                             solar_pv_data=solar_pv[country])

@@ -13,7 +13,7 @@ from long_term_uc.include.dataset_builder import get_generation_units_data, cont
 from long_term_uc.utils.read import read_and_check_pypsa_static_params
 from long_term_uc.include.dataset_builder import init_pypsa_network, add_gps_coordinates, add_energy_carrier, \
   add_generators, add_loads, add_interco_links, save_lp_model, get_stationary_batt_opt_dec
-from long_term_uc.fuel_sources import FUEL_SOURCES
+from long_term_uc.common.fuel_sources import FUEL_SOURCES
 
 usage_params, eraa_data_descr, uc_run_params = read_and_check_uc_run_params()
 

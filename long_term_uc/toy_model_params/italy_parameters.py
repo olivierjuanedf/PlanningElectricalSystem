@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from fuel_sources import FuelSources
+from long_term_uc.common.fuel_sources import FuelSources
 
 
 gps_coords = (12.5674, 41.8719)

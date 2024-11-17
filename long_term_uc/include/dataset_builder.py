@@ -8,7 +8,7 @@ import pypsa
 
 from long_term_uc.common.error_msgs import print_errors_list, print_out_msg
 from long_term_uc.common.long_term_uc_io import COMPLEM_DATA_SOURCES, COLUMN_NAMES
-from long_term_uc.fuel_sources import FuelSources
+from long_term_uc.common.fuel_sources import FuelSources
 from long_term_uc.utils.basic_utils import lexico_compar_str
 
 
