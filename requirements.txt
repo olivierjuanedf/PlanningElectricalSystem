@@ -7,3 +7,4 @@ matplotlib-inline
 pypsa
 cartopy
 Requests
+gurobipy
