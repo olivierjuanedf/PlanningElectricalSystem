@@ -6,6 +6,8 @@
 * conserver FUEL_SOURCES ou bien trop compliqué pour les étudiants ?
 2) Virer ERAA_2023-1 pour éviter confusion ?
 3) Hydraulic storages... cf. CS student code
+4) Scripts avec qques exemples de base Python ? "[coding tricks]"
+5) Usage param auto fulfill interco capa missing
 
 
 If time allows...
@@ -17,7 +19,7 @@ If time allows...
 6) Check multiple links between two zones possible. Cf. ger-scandinavia AC+DC in CentraleSupélec students hypothesis
 And types ok? Q2Emmanuel NEAU and Jean-Yves BOURMAUD
 7) Add plot functions to get demand/cf/capas values for the selected values of params (and selected period)
-
+8) Q2oj Sous-partie git avec accès différencié élèves / ta pour docs et données diff ?
 
 [Next year]
 1) Iberian-peninsula -> Iberia
