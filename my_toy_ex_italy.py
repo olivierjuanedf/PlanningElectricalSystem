@@ -110,7 +110,8 @@ print(network)
 #################################################
 # KEY POINT: main parameters needed for Italy description in PyPSA are set in script
 # long_term_uc.toy_model_params.italy_parameters.py
-# To get the meaning and format of main PyPSA objects/attributes look at file XXX
+# To get the meaning and format of main PyPSA objects/attributes look 
+# at file doc/toy-model_tutorial.md
 #################################################
 
 # IV.2) Add bus for considered country
@@ -132,7 +133,9 @@ network.add("Bus", name=country_trigram, x=coordinates[country][0], y=coordinate
 # (we will come back on this later)
 # Thanks to Tim WALTER - student of last year ATHENS course, detailed parameter values associated 
 # to different fuel sources are available in following dictionary. You can use it or search/define 
-# fictive alternative values instead -> XXX (keep format and request to fullfill it?)
+# fictive alternative values instead -> plenty infos on Internet on this... sometimes of "varying" quality! 
+# (keeping format of dataclass - sort of enriched dictionary -, just change values in 
+# file long_term_uc/common/fuel_sources.py)
 from long_term_uc.common.fuel_sources import FUEL_SOURCES
 from long_term_uc.toy_model_params.italy_parameters import get_generators
 # IV.4.1) get generators to be set on the unique considered bus here 
@@ -151,7 +154,7 @@ for generator in generators:
 # [Multiple-count. ext., end]
 
 # IV.5) Add load
-# XXX "carrier" TB explained
+# N.B. "carrier" here just to explicit that an AC current network is considered
 # IV.5.1) Setting attribute values in a dictionary
 loads = [
     {
