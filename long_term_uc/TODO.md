@@ -4,6 +4,7 @@
 * AGG_PROD_TYPES_DEF -> Q2OJ: le sortir dans un fichier JSON non ?
 * voir "XXX" (notamment les coding tricks)
 * conserver FUEL_SOURCES ou bien trop compliqué pour les étudiants ?
+* voir si certains warning sont de notre fait... même si en ligne il semble que PyPSA en génère pas mal - notamment en lien avec Linopy
 2) Virer ERAA_2023-1 pour éviter confusion ?
 3) Hydraulic storages... cf. CS student code
 4) Scripts avec qques exemples de base Python ? "[coding tricks]"

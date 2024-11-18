@@ -182,38 +182,40 @@ network.plot(
 # IV.6.3) Print out list of generators
 print(network.generators)
 
-""""OPtimize network" i.e., solve the associated Unit-Commitment pb"""
-
+# IV.7) "OPtimize network" i.e., solve the associated Unit-Commitment problem
+# IV.7.1) Solve and print result
 result = network.optimize(solver_name="highs")
 print(result)
 print(f"Total cost at optimum: {network.objective:.2f}")
-
-"""**[Optional]** For those who want to get a standard .lp file containing the equations associated to the solved pb"""
-
+# IV.7.2) [Optional] For those who want to get a standard .lp file containing 
+# the equations associated to the solved problem
+# -> will be saved in output folder output/long_term_uc/data
 from pathlib import Path
 import pypsa.optimization as opt
 from long_term_uc.common.long_term_uc_io import OUTPUT_DATA_FOLDER
 m = opt.create_model(network)
-m.to_file(Path(f'{OUTPUT_DATA_FOLDER}/model_{country_trigram.lower()}.lp'))
+m.to_file(Path(f'{OUTPUT_DATA_FOLDER}/model_{country_trigram}.lp'))
 
-"""Plot a few info/results"""
+# IV.8) Plot a few info/results
 import matplotlib.pyplot as plt
-
 print("Plot generation and prices figures")
-
-# p_nom_opt is the optimized capacity (that can be also a variable in PyPSA...
-# but here not optimized -> values in input data plotted)
+# IV.8.1) Plot generation units capacities
+# N.B. p_nom_opt is the optimized capacity (that can be also a variable in PyPSA but here... 
+# not optimized - only UC problem -> values plotted correspond to the ones that can be found in input data)
 network.generators.p_nom_opt.drop(f"Failure_{country_trigram}").div(1e3).plot.bar(ylabel="GW", figsize=(8, 3))
 # [Coding trick] Matplotlib can directly adapt size of figure to fit with values plotted
 plt.tight_layout()
 
-# And "stack" of optimized production profiles
+# IV.8.2) And "stack" of optimized production profiles -> key graph to interpret UC solution -> will be 
+# saved in file output/long_term_uc/figures/prod_italy_{year}_{period start, under format %Y-%m-%d}.png
 network.generators_t.p.div(1e3).plot.area(subplots=False, ylabel="GW")
 from long_term_uc.common.long_term_uc_io import get_prod_figure, get_price_figure
 plt.savefig(get_prod_figure(country=country, year=year, start_horizon=uc_run_params.uc_period_start))
 plt.tight_layout()
 
-# Finally, "marginal prices" -> meaning? How can you interprete the very constant value plotted?
+# IV.8.3) Finally, "marginal prices" -> QUESTION: meaning? 
+# -> saved in file output/long_term_uc/figures/prices_italy_{year}_{period start, under format %Y-%m-%d}.png
+# QUESTION: how can you interpret the very constant value plotted?
 network.buses_t.marginal_price.mean(1).plot.area(figsize=(8, 3), ylabel="Euro per MWh")
 plt.savefig(get_price_figure(country=country, year=year, start_horizon=uc_run_params.uc_period_start))
 plt.tight_layout()
