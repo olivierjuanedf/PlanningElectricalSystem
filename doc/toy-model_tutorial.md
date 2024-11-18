@@ -17,4 +17,5 @@ and an **"extract" of the first one regarding generator objects given below** yo
 * (optional) **"p_nom"** -> capacity (a power, in MW). **Format**: int. **Default**: 0
 * (optional) **p_min_pu** -> minimal power level - as % of capacity ("pu" stands for "per unit"), set to 0 to start simple. **Format**: float or vector (list or NumPy array). **Default**: 0
 * (optional) **p_max_pu** -> idem, maximal power. Can integrate "Capacity Factors" (or maintenance); in this case it can be variable in time. **Format**: float or vector (list or NumPy array). **Default**: 1
-        
+
+TODO: available values in JSON file xxx

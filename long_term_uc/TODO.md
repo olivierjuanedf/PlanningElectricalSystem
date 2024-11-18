@@ -9,6 +9,7 @@
 4) Hydraulic storages... cf. CS student code
 5) Scripts avec qques exemples de base Python ? "[coding tricks]"
 6) Usage param auto fulfill interco capa missing
+7) / by efficiency in FuelSources and not * for primary cost?
 
 
 If time allows...

@@ -48,6 +48,7 @@ year = 2025
 # -> idem
 # N.B. Ask Boutheina OUESLATI on Wednesday to get an idea of the 'climatic' versus 'weather' conditions 
 climatic_year = 1989
+# TODO: used?
 agg_prod_types_selec = ["wind_onshore", "wind_offshore", "solar_pv"]
 
 """
@@ -83,15 +84,15 @@ demand, agg_cf_data, agg_gen_capa_data, interco_capas = \
 # III.2) In this case, decompose aggreg. CF data into three sub-dicts (for following ex. to be more explicit)
 from long_term_uc.utils.df_utils import selec_in_df_based_on_list
 solar_pv = {
-    "italy": selec_in_df_based_on_list(df=agg_cf_data["italy"], selec_col="production_type_agg",
+    country: selec_in_df_based_on_list(df=agg_cf_data[country], selec_col="production_type_agg",
                                        selec_vals=["solar_pv"], rm_selec_col=True)
 }
 wind_on_shore = {
-    "italy": selec_in_df_based_on_list(df=agg_cf_data["italy"], selec_col="production_type_agg",
+    country: selec_in_df_based_on_list(df=agg_cf_data[country], selec_col="production_type_agg",
                                        selec_vals=["wind_onshore"], rm_selec_col=True)
 }
 wind_off_shore = {
-    "italy": selec_in_df_based_on_list(df=agg_cf_data["italy"], selec_col="production_type_agg",
+    country: selec_in_df_based_on_list(df=agg_cf_data[country], selec_col="production_type_agg",
                                        selec_vals=["wind_offshore"], rm_selec_col=True)
 }
 
@@ -168,7 +169,6 @@ loads = [
 # [Multiple-count. ext., end]
 
 # IV.5.2) Then adding Load objects to PyPSA model
-
 for load in loads:
     network.add("Load", **load)
 
@@ -184,7 +184,7 @@ network.plot(
 # IV.6.3) Print out list of generators
 print(network.generators)
 
-# IV.7) "OPtimize network" i.e., solve the associated Unit-Commitment problem
+# IV.7) "Optimize network" i.e., solve the associated Unit-Commitment problem
 # IV.7.1) Solve and print result
 result = network.optimize(solver_name="highs")
 print(result)
