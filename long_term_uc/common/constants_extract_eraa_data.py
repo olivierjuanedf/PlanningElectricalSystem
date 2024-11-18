@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Union, Optional, Literal
 
-from common.error_msgs import print_errors_list
+from long_term_uc.common.error_msgs import print_errors_list
 from long_term_uc.utils.basic_utils import is_str_bool
 from long_term_uc.utils.eraa_utils import set_interco_to_tuples
-from utils.type_checker import apply_data_type_check
+from long_term_uc.utils.type_checker import apply_data_type_check
 
 
 INTERCO_STR_SEP = "2"

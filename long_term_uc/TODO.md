@@ -1,13 +1,11 @@
 [Toy ex, Mon afternoon]
 1) Doc doc/... pour clarifier les choses + baba utilisation codespace en dehors du repot ?
 2) my_toy_ex_italy.py
-* AGG_PROD_TYPES_DEF -> Q2OJ: le sortir dans un fichier JSON non ?
 * voir "XXX" (notamment les coding tricks)
 * conserver FUEL_SOURCES ou bien trop compliqué pour les étudiants ?
 * voir si certains warning sont de notre fait... même si en ligne il semble que PyPSA en génère pas mal - notamment en lien avec Linopy
 2bis) Cleaner italy_parameters.py
 2ter) Finaliser coquilles vides my_toy_ex_country.py et country_parameters.py
-3) Virer ERAA_2023-1 pour éviter confusion ?
 4) Hydraulic storages... cf. CS student code
 5) Scripts avec qques exemples de base Python ? "[coding tricks]"
 6) Usage param auto fulfill interco capa missing

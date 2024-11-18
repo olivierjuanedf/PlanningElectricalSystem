@@ -2,11 +2,10 @@
 """
 First very simple toy Unit Commitment model of Italy zone - alone -> with PyPSA and ERAA data
 """
-
-
-import os, sys
-sys.path += [os.path.dirname(os.path.dirname(__file__))]
-
+import warnings
+#deactivate some annoying and useless warnings in pypsa/pandas
+warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=UserWarning)
 
 
 AGG_PROD_TYPES_DEF = {
@@ -72,7 +71,7 @@ uc_run_params = UCRunParams(selected_countries=selected_countries, selected_targ
                             uc_period_end=uc_period_end)
 
 """
-III) Get needed data - from ERAA csv files in data\ERAA_2023-2
+III) Get needed data - from ERAA csv files in data\\ERAA_2023-2
 """
 from long_term_uc.utils.eraa_data_reader import get_countries_data
 
@@ -119,7 +118,7 @@ print(network)
 from long_term_uc.toy_model_params.italy_parameters import gps_coords
 coordinates = {"italy": gps_coords}
 # IV.2.1) For brevity, set country trigram as the "id" of this zone in following model definition (and observed outputs)
-from include.dataset_builder import set_country_trigram
+from long_term_uc.include.dataset_builder import set_country_trigram
 country_trigram = set_country_trigram(country=country)
 # N.B. Multiple bus would be added if multiple countries were considered
 network.add("Bus", name=country_trigram, x=coordinates[country][0], y=coordinates[country][1])
@@ -143,7 +142,7 @@ generators = get_generators(country_trigram=country_trigram, fuel_sources=FUEL_S
                             solar_pv_data=solar_pv[country])
 
 # IV.4.2) Loop over previous list of dictionaries to add each of the generators to PyPSA network
-# [Coding trick] ** used to XXX (nom de cette opération ?)
+# [Coding trick] ** used to "unpack" the dictionary as named parameters
 for generator in generators:
     network.add("Generator", bus=country_trigram, **generator, )
 # [Multiple-count. ext., start] Idem but adding the different generators to the bus (country) they are connected to
@@ -160,7 +159,7 @@ loads = [
         "carrier": "AC", "p_set": demand[country]["value"].values
     }
 ]
-# [Coding trick] f"{my_var} is associated to {my_country}" XXX (f-string link)
+# [Coding trick] f"{my_var} is associated to {my_country}" is a f-string or formatted-string (https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals)
 # [Multiple-count. ext., start] Multiple dictionaries in previous list, 
 # each of them corresponding to a given bus (country)
 # [Multiple-count. ext., end]
