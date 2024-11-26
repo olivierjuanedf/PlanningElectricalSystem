@@ -1,14 +1,17 @@
 import json
-import os
+from typing import List
+from copy import deepcopy
+
 
 from long_term_uc.common.long_term_uc_io import get_json_usage_params_file, get_json_fixed_params_file, \
-    get_json_eraa_avail_values_file, \
-    get_json_params_tb_modif_file, get_json_pypsa_static_params_file, get_json_params_modif_country_files, \
-    INPUT_LT_UC_COUNTRY_SUBFOLDER
+    get_json_eraa_avail_values_file, get_json_params_tb_modif_file, get_json_pypsa_static_params_file, \
+        get_json_params_modif_country_files, get_json_fuel_sources_tb_modif_file, \
+            get_json_data_analysis_params_file
 from long_term_uc.common.constants_extract_eraa_data import USAGE_PARAMS_SHORT_NAMES, ERAADatasetDescr, \
     PypsaStaticParams, UsageParameters
 from long_term_uc.common.uc_run_params import UCRunParams
 from long_term_uc.common.error_msgs import print_out_msg
+from long_term_uc.include.dataset_analyzer import DataAnalysis, DATA_SUBTYPE_KEY, ORDERED_DATA_ANALYSIS_ATTRS
 from long_term_uc.utils.dir_utils import check_file_existence
 
 
@@ -23,12 +26,13 @@ def check_and_load_json_file(json_file: str, file_descr: str = None) -> dict:
     return json_data
 
 
-def read_and_check_uc_run_params():
+def read_and_check_uc_run_params() -> (UsageParameters, ERAADatasetDescr, UCRunParams):
     # set JSON filenames
     json_usage_params_file = get_json_usage_params_file()
     json_fixed_params_file = get_json_fixed_params_file()
     json_eraa_avail_values_file = get_json_eraa_avail_values_file()
     json_params_tb_modif_file = get_json_params_tb_modif_file()
+    json_fuel_sources_tb_modif_file = get_json_fuel_sources_tb_modif_file()
     # TODO[ATHENS]: read 3 JSON files then func check_and_run UC (allow)
     # for the students script (i) call read + (ii) own loop changing parameters (iii) call check_and_run
     # WITH run_name param to identify file with output results (if None no suffix added)
@@ -49,6 +53,9 @@ def read_and_check_uc_run_params():
     json_params_fixed |= json_eraa_avail_values
     json_params_tb_modif = check_and_load_json_file(json_file=json_params_tb_modif_file,
                                                     file_descr="JSON params to be modif.")
+    # fuel sources values modif.
+    json_fuel_sources_tb_modif = check_and_load_json_file(json_file=json_fuel_sources_tb_modif_file,
+                                                          file_descr="JSON fuel sources params to be modif.")
     # check that modifications in JSON in which it is allowed are allowed/coherent
     print_out_msg(msg_level="info", 
                   msg="... and check that modifications done are coherent with available ERAA data")
@@ -91,9 +98,12 @@ def read_and_check_uc_run_params():
             json_params_tb_modif['selected_prod_types'][c] = v
         del countries_data['selected_prod_types']
 
-    uc_run_params = UCRunParams(**json_params_tb_modif, **countries_data)
+    uc_run_params = UCRunParams(**json_params_tb_modif, **countries_data, 
+                                updated_fuel_sources_params=json_fuel_sources_tb_modif)
     uc_run_params.process(available_countries=eraa_data_descr.available_countries)
-    uc_run_params.coherence_check(eraa_data_descr=eraa_data_descr)
+    uc_run_params.set_is_stress_test(avail_cy_stress_test=eraa_data_descr.available_climatic_years_stress_test)
+    uc_run_params.coherence_check(eraa_data_descr=eraa_data_descr, 
+                                  year=uc_run_params.selected_target_year)
 
     return usage_params, eraa_data_descr, uc_run_params
 
@@ -109,3 +119,30 @@ def read_and_check_pypsa_static_params() -> PypsaStaticParams:
     pypsa_static_params.check_types()
     pypsa_static_params.process()
     return pypsa_static_params
+
+
+def read_and_check_data_analysis_params() -> List[DataAnalysis]:
+    json_data_analysis_params_file = get_json_data_analysis_params_file()
+    print_out_msg(msg_level="info", 
+                  msg=f"Read and check data analysis parameters file; the ones modified in file {json_data_analysis_params_file}")
+
+    json_data_analysis_params = check_and_load_json_file(json_file=json_data_analysis_params_file,
+                                                         file_descr="JSON data analysis params")
+    dict_keys = ORDERED_DATA_ANALYSIS_ATTRS
+    n_keys = len(dict_keys)
+    dict_keys_wo_subdt = deepcopy(dict_keys)
+    dict_keys_wo_subdt.remove(DATA_SUBTYPE_KEY)
+    data_analysis_params = json_data_analysis_params["data_analysis_list"]
+    data_analyses = []
+    for param_vals in data_analysis_params:
+        # case including sub datatype, e.g. production type
+        if len(param_vals) == n_keys:
+            current_keys = dict_keys
+        else:
+            current_keys = dict_keys_wo_subdt
+        dict_params = dict(zip(current_keys, param_vals))
+        data_analyses.append(DataAnalysis(**dict_params))
+    # check types
+    for elt_analysis in data_analyses:
+        elt_analysis.check_types()
+    return data_analyses
